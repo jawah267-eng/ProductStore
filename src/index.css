@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@import "tailwindcss";
+
+@theme {
+  --color-main: #ff8716;
+  --color-light: #f3f3f3;
+  --color-heading: #121416;
+  --color-line: #e5e5e5;
+  --color-sale: #e51a1a;
+  --color-beige: #f5f0e6;
+  --color-page: #fdf6ec;
+}
+
+@layer base {
+  body {
+    @apply bg-page;
+  }
+}

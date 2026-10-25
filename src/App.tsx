@@ -3,12 +3,14 @@ import Header from "./components/Header";
 import market from "./assets/market.jpg";
 import ProductList from "./components/ProductList";
 import Footer from "./components/Footer";
-
+import { BrowserRouter , Route, Routes } from "react-router-dom";
 function App() {
   const [search ,setSearch] = useState("");
   return (
-    <>
-      <Header onSearch={setSearch} />
+  
+    <BrowserRouter>
+ 
+          <Header onSearch={setSearch} />
 
       <div className="relative h-[calc(100vh-149px)]">
         <img
@@ -22,11 +24,16 @@ function App() {
           </h1>
         </div>
       </div>
-      <main id="products" className="flex-1">
+         <Routes>
+      <Route path="/" element={<ProductList search={search} />} />
+    </Routes>
+      {/* <main id="products" className="flex-1">
         <ProductList search={search}/>
-      </main>
+      </main> */}
       <Footer />
-    </>
+    </BrowserRouter>
+
+
   );
 }
 

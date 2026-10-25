@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProductCard, { type Product } from "./ProductCard";
 import Pagination from "./Pagination";
-
+import axios from "axios";
 const limit = 8;
 
 const ProductList = ({ search }: { search: string }) => {
@@ -12,25 +12,25 @@ const ProductList = ({ search }: { search: string }) => {
   const [total, setTotal] = useState(0);
 
   const totalPages = Math.ceil(total / limit);
+    const skip = (page - 1) * limit;
 
   useEffect(() => {
     const controller = new AbortController();
-    const skip = (page - 1) * limit;
 
     const load = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(
-          `https://dummyjson.com/products?skip=${skip}&limit=${limit}`,
-          {
-            signal: controller.signal,
-          },
-        );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setProducts(data.products);
-        setTotal(data.total);
+        const api =axios.create({
+          baseURL: import.meta.env.VITE_API_BASE_URL ||
+           `https://dummyjson.com`,
+           timeout: 10000,
+            headers: { 'Content-Type': 'application/json' },
+        });
+   
+        const res = await api.get("/products?skip=" + skip + "&limit=" + limit );
+        setProducts(res.data.products);
+        // setTotal(data.total);
       } catch (err) {
         if (err instanceof Error && err.name !== "AbortError") {
           setError(err instanceof Error ? err.message : "faild to load");

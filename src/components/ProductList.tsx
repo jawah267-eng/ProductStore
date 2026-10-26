@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import ProductCard, { type Product } from "./ProductCard";
 import Pagination from "./Pagination";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const limit = 8;
 
 const ProductList = ({ search }: { search: string }) => {
+  const  nevagate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +71,7 @@ const ProductList = ({ search }: { search: string }) => {
         {products.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
+        
       </div>
       <Pagination
         page={page}

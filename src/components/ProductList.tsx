@@ -1,49 +1,20 @@
-import React, { useEffect, useState } from "react";
-import ProductCard, { type Product } from "./ProductCard";
+import  {  useState } from "react";
+import ProductCard from "./ProductCard";
 import Pagination from "./Pagination";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-const limit = 8;
 
-const ProductList = ({ search }: { search: string }) => {
-  const  nevagate = useNavigate();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+import { useFetch } from "../hooks/useAxios";
+import { productService } from "../services/product.service";
+
+const limit = 8;
+const ProductList = () => {
+  const { products, loading, error } = useFetch(productService.getAll);
+  console.log("Products from API:", products);
+
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
 
   const totalPages = Math.ceil(total / limit);
-    const skip = (page - 1) * limit;
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const load = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const api =axios.create({
-          baseURL: import.meta.env.VITE_API_BASE_URL ||
-           `https://dummyjson.com`,
-           timeout: 10000,
-            headers: { 'Content-Type': 'application/json' },
-        });
-   
-        const res = await api.get("/products?skip=" + skip + "&limit=" + limit );
-        setProducts(res.data.products);
-        // setTotal(data.total);
-      } catch (err) {
-        if (err instanceof Error && err.name !== "AbortError") {
-          setError(err instanceof Error ? err.message : "faild to load");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-    return () => controller.abort();
-  }, [page, search]);
+  const skip = (page - 1) * limit;
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -71,7 +42,6 @@ const ProductList = ({ search }: { search: string }) => {
         {products.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
-        
       </div>
       <Pagination
         page={page}

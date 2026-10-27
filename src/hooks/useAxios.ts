@@ -1,38 +1,35 @@
-// import { useState, useEffect } from "react";
-// import type { Product } from "../components/ProductCard";
-// import axios from "axios";
-// import { type Product } from "../components/ProductCard";
+import { useState, useEffect, useCallback } from "react";
+interface UseFetchResult<T>{
+  products: T[];
+  loading:boolean;
+  error:string | null;
+  refresh: ()=> Promise<void>;
+}
+export function useFetch <T>(fetcher :()=> Promise<T[]> ) : UseFetchResult<T> {
+  const [products, setProducts] = useState<T[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-// export const useAxios = (url) => {
-//  const [products, setProducts] = useState<Product[]>([]);
-//    const [loading, setLoading] = useState(true);
-//    const [error, setError] = useState<string | null>(null);
-//  useEffect(() => {
-//     const controller = new AbortController();
+const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try{
+      setProducts(await fetcher());
+    }catch(err){
+      setError(err instanceof Error ? err.message : "Failed to load");
+    }
+    finally{
+      setLoading(false);
+    }
+  }, [fetcher]);
 
-//     const load = async () => {
-//       setLoading(true);
-//       setError(null);
-//       try {
-//         const api =axios.create({
-//           baseURL: import.meta.env.VITE_API_BASE_URL ||
-//            `https://dummyjson.com`,
-//            timeout: 10000,
-//             headers: { 'Content-Type': 'application/json' },
-//         });
-   
-//         const res = await api.get(url );
-//         setProducts(res.data.products);
-//         // setTotal(data.total);
-//       } catch (err) {
-//         if (err instanceof Error && err.name !== "AbortError") {
-//           setError(err instanceof Error ? err.message : "faild to load");
-//         }
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     load();
-//     return () => controller.abort();
-//   }, [url]);
-// }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      void fetchData();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [fetchData]);
+
+  return { products, loading, error, refresh: fetchData };
+}

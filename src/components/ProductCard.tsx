@@ -1,12 +1,5 @@
-import React from "react";
-export type Product = {
-  id: number;
-  title: string;
-  price: number;
-  rating: number;
-  thumbnail: string;
-  category: string;
-};
+import type { Product } from "../types/product.types";
+export type { Product } from "../types/product.types";
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (

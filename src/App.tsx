@@ -4,6 +4,8 @@ import market from "./assets/market.jpg";
 import ProductList from "./components/ProductList";
 import Footer from "./components/Footer";
 import { BrowserRouter , Route, Routes } from "react-router-dom";
+import LoginForm from "./components/loginForm";
+import { CompMemo } from "./components/Auth/CompMemo";
 // import ProductDetails from "./components/ProductDetails";
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
       </div>
          <Routes>
       <Route path="/" element={<ProductList search={search} />} />
+      <Route path="/login" element={<LoginForm/>} />
+      <Route path="/memo" element={<CompMemo/>} />
       {/* <Route path="/products/:id" element={<ProductDetails />} /> */}
     </Routes>
       {/* <main id="products" className="flex-1">
